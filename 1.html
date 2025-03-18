@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tính Diện Tích và Chu Vi</title>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 50px;
+            display: block;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input {
+            margin-top: 5px;
+            padding: 5px;
+            width: 200px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 18px;;
+            
+        }
+        .error {
+            color: red;
+        }
+        button:hover {
+            background-color: #6c6ae1;
+            color: white;
+        }
+        select {
+            margin-top: 10px;
+            background-color: white;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+            width: 200px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        select:focus {
+            outline: none;
+            border-color: #6c6ae1;
+            box-shadow: 0 0 5px rgba(108, 106, 225, 0.5);
+        }
+        div.res{
+            display: inline-block;
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+    
+    <h1>Tính Diện Tích và Chu Vi</h1>
+    
+    <label for="shape">Chọn loại hình:</label>
+    <select id="shape" onchange="displayInputFields()">
+        <option value="rectangle">Hình chữ nhật</option>
+        <option value="circle">Hình tròn</option>
+        <option value="triangle">Hình tam giác</option>
+    </select>
+    
+    <div id="input-fields"></div>
+    
+    <button  onclick="calculate()">Tính toán</button>
+    
+    <div id="result" class="result"></div>
+
+    <script>
+        function displayInputFields() {
+            const shape = document.getElementById("shape").value;
+            const inputFields = document.getElementById("input-fields");
+            inputFields.innerHTML = "";  
+
+            if (shape === "rectangle") {
+                inputFields.innerHTML = `
+                    <label for="length">Chiều dài:</label>
+                    <input type="text" id="length" placeholder="Nhập chiều dài">
+                    <label for="width">Chiều rộng:</label>
+                    <input type="text" id="width" placeholder="Nhập chiều rộng">
+                `;
+            } else if (shape === "circle") {
+                inputFields.innerHTML = `
+                    <label for="radius">Bán kính:</label>
+                    <input type="text" id="radius" placeholder="Nhập bán kính">
+                `;
+            } else if (shape === "triangle") {
+                inputFields.innerHTML = `
+                    <label for="sideA">Cạnh A:</label>
+                    <input type="text" id="sideA" placeholder="Nhập cạnh A">
+                    <label for="sideB">Cạnh B:</label>
+                    <input type="text" id="sideB" placeholder="Nhập cạnh B">
+                    <label for="sideC">Cạnh C:</label>
+                    <input type="text" id="sideC" placeholder="Nhập cạnh C">
+                `;
+            }
+        }
+
+        function calculate() {
+            const shape = document.getElementById("shape").value;
+            let resultDiv = document.getElementById("result");
+            resultDiv.innerHTML = ""; 
+
+            if (shape === "rectangle") {
+                const length = parseFloat(document.getElementById("length").value);
+                const width = parseFloat(document.getElementById("width").value);
+
+                if (isNaN(length) || isNaN(width) || length <= 0 || width <= 0) {
+                    resultDiv.innerHTML = `<div class="error">Vui lòng nhập giá trị hợp lệ cho chiều dài và chiều rộng.</div>`;
+                    return;
+                }
+
+                const area = length * width;
+                const perimeter = 2 * (length + width);
+                resultDiv.innerHTML = `<div class="res"> Diện tích: ${area.toFixed(2)} <br>Chu vi: ${perimeter.toFixed(2)}</div>`;
+            } else if (shape === "circle") {
+                const radius = parseFloat(document.getElementById("radius").value);
+
+                if (isNaN(radius) || radius <= 0) {
+                    resultDiv.innerHTML = `<div class="error">Vui lòng nhập giá trị hợp lệ cho bán kính.</div>`;
+                    return;
+                }
+
+                const area = Math.PI * radius * radius;
+                const perimeter = 2 * Math.PI * radius;
+                resultDiv.innerHTML = `<div class="res">Diện tích: ${area.toFixed(2)}<br>Chu vi: ${perimeter.toFixed(2)}</div>`;
+            } else if (shape === "triangle") {
+                const sideA = parseFloat(document.getElementById("sideA").value);
+                const sideB = parseFloat(document.getElementById("sideB").value);
+                const sideC = parseFloat(document.getElementById("sideC").value);
+
+                if (isNaN(sideA) || isNaN(sideB) || isNaN(sideC) || sideA <= 0 || sideB <= 0 || sideC <= 0) {
+                    resultDiv.innerHTML = `<div class="error">Vui lòng nhập giá trị hợp lệ cho các cạnh của hình tam giác.</div>`;
+                    return;
+                }
+
+                const perimeter = sideA + sideB + sideC;
+                const s = perimeter / 2;
+                const area = Math.sqrt(s * (s - sideA) * (s - sideB) * (s - sideC));
+
+                if (isNaN(area) || area <= 0) {
+                    resultDiv.innerHTML = `<div class="error">Các cạnh không hợp lệ, không thể tạo thành tam giác.</div>`;
+                    return;
+                }
+
+                resultDiv.innerHTML = `<div class="res">Diện tích: ${area.toFixed(2)}<br>Chu vi: ${perimeter.toFixed(2)}</div>`;
+            }
+            
+        }
+        displayInputFields();
+    </script>
+</body>
+</html>
